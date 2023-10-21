@@ -6,7 +6,7 @@ import socketio
 senseHat = SenseHat()
 senseHat.clear()
 socket = socketio.Client()
-GREEN = (0, 255, 0)
+SNAKE = (0, 255, 0)
 RED = (255, 0, 0)
 WHITE = (0, 0, 0)
 START_DELAY = 1
@@ -43,13 +43,13 @@ def game():
     movementY = -1
 
     # Game start screen
-    senseHat.show_letter("3", GREEN)
+    senseHat.show_letter("3", SNAKE)
     socket.emit('pixels', senseHat.get_pixels())
     time.sleep(1)
-    senseHat.show_letter("2", GREEN)
+    senseHat.show_letter("2", SNAKE)
     socket.emit('pixels', senseHat.get_pixels())
     time.sleep(1)
-    senseHat.show_letter("1", GREEN)
+    senseHat.show_letter("1", SNAKE)
     socket.emit('pixels', senseHat.get_pixels())
 
     # -----------------------------------
@@ -148,7 +148,7 @@ def game():
         senseHat.clear()
         senseHat.set_pixel(foodPosX, foodPosY, RED)
         for x, y in zip(snakePosX, snakePosY):
-            senseHat.set_pixel(x, y, GREEN)
+            senseHat.set_pixel(x, y, SNAKE)
 
 @socket.event
 def connect():
@@ -173,12 +173,22 @@ def stopGame():
 def gameFull():
     print('Game is full')
 
-isMediator = input("Is your Pi connected to the internet? (y/n): ")
+@socket.on('playerColor')
+def playerColor(playerColor):
+    global SNAKE
+    SNAKE = playerColor
 
-if (isMediator == 'y'):
-    url = 'https://presently-fresh-kingfish.ngrok-free.app'
-else:
-    url = 'http://localhost:3000'
+
+while True:
+    isMediator = input("Is your Pi connected to the internet? (y/n): ")
+    if (isMediator == 'y'):
+        url = 'https://presently-fresh-kingfish.ngrok-free.app'
+        break
+    elif (isMediator == 'n'):
+        url = 'http://localhost:3000'
+        break
+    else:
+        print("Invalid input. Please enter 'y' or 'n'.")
 
 try:
     socket.connect(url)
