@@ -13,16 +13,22 @@ START_DELAY = 1
 MATRIX_MIN_VALUE = 0
 MATRIX_MAX_VALUE = 7
 MATRIX_SIZE = 8
-gameOverFlag = False
+GAME_OVER_FLAG = False
+# The player's current score is appended to this list every game loop.
+# This creates graph data where the x-axis is number of movements and the y-axis is the score.
+SCORE_GRAPH = []
 
 def game():
     # variables:
-    global gameOverFlag
-    gameOverFlag = False
+    global SCORE_GRAPH
+    global GAME_OVER_FLAG
+    SCORE_GRAPH = []
+    GAME_OVER_FLAG = False
     growSnakeFlag = False
     generateRandomFoodFlag = False
     snakeMovementDelay = 0.5
     snakeMovementDelayDecrease = -0.02
+    score = 0
 
     # start delay:
     time.sleep(START_DELAY)
@@ -55,8 +61,9 @@ def game():
     # -----------------------------------
     #             game loop
     # -----------------------------------
-    while not gameOverFlag:
+    while not GAME_OVER_FLAG:
 
+        # send pixels to server:
         socket.emit('pixels', senseHat.get_pixels())
 
         # check if snake eats food:
@@ -64,14 +71,18 @@ def game():
             growSnakeFlag = True
             generateRandomFoodFlag = True
             snakeMovementDelay += snakeMovementDelayDecrease
+            score += 1
+
+        # update score graph:
+        SCORE_GRAPH.append(score)
 
         # check if snake bites itself:
         for i in range(1, len(snakePosX)):
             if snakePosX[i] == snakePosX[0] and snakePosY[i] == snakePosY[0]:
-                gameOverFlag = True
+                GAME_OVER_FLAG = True
 
         # check if game-over:
-        if gameOverFlag:
+        if GAME_OVER_FLAG:
             break
 
         # check orientation:
@@ -159,15 +170,17 @@ def connect():
 @socket.on('startGame')
 def startGame():
     print('Game started')
-    global gameOverFlag
-    gameOverFlag = False
+    global GAME_OVER_FLAG
+    GAME_OVER_FLAG = False
     game()
 
 @socket.on('stopGame')
 def stopGame():
     print('Game over')
-    global gameOverFlag
-    gameOverFlag = True
+    global GAME_OVER_FLAG
+    global SCORE_GRAPH
+    GAME_OVER_FLAG = True
+    socket.emit('scoreGraph', SCORE_GRAPH)
 
 @socket.on('gameFull')
 def gameFull():
