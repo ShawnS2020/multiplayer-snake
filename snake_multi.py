@@ -169,6 +169,10 @@ def stopGame():
     global gameOverFlag
     gameOverFlag = True
 
+@socket.on('gameFull')
+def gameFull():
+    print('Game is full')
+
 isMediator = input("Is your Pi connected to the internet? (y/n): ")
 
 if (isMediator == 'y'):
