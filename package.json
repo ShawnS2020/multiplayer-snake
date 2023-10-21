@@ -1,0 +1,25 @@
+{
+  "name": "multiplayer-snake",
+  "version": "1.0.0",
+  "description": "**This option is for people who want to play the game without connecting their Raspberry Pi to the internet.**\r - Follow these instructions on your local machine that you are using to SSH into your Raspberry Pi.\r - Install NodeJS.\r - Run the mediator server, mediator.js, on your local machine that is connected to the internet: `node mediator.js`\r - This server will relay WebSocket events from your Pi to the mediator (your local machine) to the machine hosting the multiplayer server.\r - SSH into your Raspberry Pi from your local machine using remote port forwarding from port 3000 to 8080.\r - The command for this is: `ssh -R 3000:localhost:8080 [your-username]@raspberrypi.local`\r - Follow the instructions below for running the game and connecting to the server.",
+  "main": "mediator.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShawnS2020/multiplayer-snake.git"
+  },
+  "author": "Shawn Suttie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShawnS2020/multiplayer-snake/issues"
+  },
+  "homepage": "https://github.com/ShawnS2020/multiplayer-snake#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
+  }
+}
