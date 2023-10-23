@@ -20,6 +20,14 @@ mediatorSocket.on('connect', () => {
     mediatorSocket.on('stopGame', () => {
         ioServer.emit('stopGame');
     });
+
+    mediatorSocket.on('gameFull', () => {
+        ioServer.emit('gameFull');
+    });
+
+    mediatorSocket.on('playerColor', (color) => {
+        ioServer.emit('playerColor', color);
+    });
 })
 
 // Relay player events to multiplayer server
