@@ -7,7 +7,7 @@ const app = express();
 const httpServer = createServer(app);
 const ioServer = new Server(httpServer);
 
-const mediatorSocket = ioClient.connect('https://presently-fresh-kingfish.ngrok-free.app');
+const mediatorSocket = ioClient.connect('http://35.209.28.30:3000');
 
 // Relay multiplayer server events to player
 mediatorSocket.on('connect', () => {

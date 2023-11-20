@@ -195,7 +195,13 @@ def playerColor(playerColor):
 while True:
     isMediator = input("Is your Pi connected to the internet? (y/n): ")
     if (isMediator == 'y'):
-        url = 'https://presently-fresh-kingfish.ngrok-free.app'
+        ip = input("Please enter the server IP you wish to connect to (leave blank for default server):")
+        if ip == '':
+            url = 'http://35.209.28.30:3000'
+        else:
+            url = 'http://' + ip + ':3000'
+        #url = 'http://35.223.19.176:3000/'
+        print(url)
         break
     elif (isMediator == 'n'):
         url = 'http://localhost:3000'
