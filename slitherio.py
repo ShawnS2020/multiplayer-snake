@@ -6,6 +6,10 @@ senseHat = SenseHat()
 senseHat.clear()
 socket = socketio.Client()
 
+def game():
+    game_over_flag = False
+    while not game_over_flag:
+
 @socket.event
 def connect():
     print('Connected to the server')
@@ -15,6 +19,7 @@ def connect():
 @socket.on('startGame')
 def startGame():
     print('Game started')
+    game()
 
 @socket.on('getMovement')
 def getMovement(snakeMovementDelay):
