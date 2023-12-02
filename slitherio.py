@@ -6,41 +6,70 @@ senseHat = SenseHat()
 senseHat.clear()
 socket = socketio.Client()
 
-def game():
-    game_over_flag = False
-    while not game_over_flag:
+playerId = None
+movX = 0
+movY = 0
+
+def trackMovement():
+    global playerId
+    global movX
+    global movY
+    while True:
+        o = senseHat.get_orientation()
+        pitch = o["pitch"]
+        roll = o["roll"]
+
+        if pitch > 20 and pitch < 270:
+            movX = -1
+            movY = 0
+        elif pitch < 340 and pitch > 270:
+            movX = 1
+            movY = 0
+        elif roll < 340 and roll > 270:
+            movY = -1
+            movX = 0
+        elif roll > 20 and roll < 270:
+            movY = 1
+            movX = 0
+        socket.emit('movement', { 'playerId': playerId, 'movX': movX, 'movY': movY })
+        time.sleep(0.5)
 
 @socket.event
 def connect():
     print('Connected to the server')
     name = input("Enter your name: ")
-    socket.emit('joinGame', name)
+    socket.emit('joinSlitherio', name)
 
-@socket.on('startGame')
+@socket.on('playerId')
+def setPlyaerId(newId):
+    global playerId
+    playerId = newId
+
+@socket.on('startSlitherio')
 def startGame():
     print('Game started')
-    game()
-
-@socket.on('getMovement')
-def getMovement(snakeMovementDelay):
-    movement = "none"
-
-    for i in range(0, round(snakeMovementDelay / .05)):
+    global playerId
+    global movX
+    global movY
+    while True:
         o = senseHat.get_orientation()
         pitch = o["pitch"]
         roll = o["roll"]
 
-        if pitch > 20 and pitch < 270 and movementX != 1:
-            movement = "left"
-        elif pitch < 340 and pitch > 270 and movementX != -1:
-            movement = "right"
-        elif roll < 340 and roll > 270 and movementY != 1:
-            movement = "up"
-        elif roll > 20 and roll < 270 and movementY != -1:
-            movement = "down"
-        time.sleep(.05)
-
-    socket.emit('sendMovement', movement)
+        if pitch > 20 and pitch < 270:
+            movX = -1
+            movY = 0
+        elif pitch < 340 and pitch > 270:
+            movX = 1
+            movY = 0
+        elif roll < 340 and roll > 270:
+            movY = -1
+            movX = 0
+        elif roll > 20 and roll < 270:
+            movY = 1
+            movX = 0
+        socket.emit('movement', { 'playerId': playerId, 'movX': movX, 'movY': movY })
+        time.sleep(0.05)
 
 while True:
     isMediator = input("Is your Pi connected to the internet? (y/n): ")
