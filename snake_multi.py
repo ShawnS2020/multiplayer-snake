@@ -1,4 +1,5 @@
 from sense_hat import SenseHat
+from simple_term_menu import TerminalMenu
 import time
 import random
 import socketio
@@ -191,23 +192,35 @@ def playerColor(playerColor):
     global SNAKE
     SNAKE = playerColor
 
-
-while True:
-    isMediator = input("Is your Pi connected to the internet? (y/n): ")
-    if (isMediator == 'y'):
-        ip = input("Please enter the server IP you wish to connect to (leave blank for default server):")
-        if ip == '':
-            url = 'http://35.209.28.30:3000'
-        else:
-            url = 'http://' + ip + ':3000'
-        #url = 'http://35.223.19.176:3000/'
-        print(url)
-        break
-    elif (isMediator == 'n'):
-        url = 'http://localhost:3000'
-        break
+menu_options = ["yes", "no"]
+terminal_menu = TerminalMenu(menu_options, title="Is your Pi connected to the internet? (Select no if you intend to use the proxy server)")
+menu_entry_index = terminal_menu.show()
+if (menu_entry_index == 0):
+    ip = input("Please enter the server IP you wish to connect to\n(leave blank for default server)\n")
+    if ip == '':
+        url = 'http://35.209.28.30:3000'
     else:
-        print("Invalid input. Please enter 'y' or 'n'.")
+        url = 'http://' + ip + ':3000'
+    print(url)
+else:
+    url = 'http://localhost:3000'
+
+# while True:
+#     isMediator = input("Is your Pi connected to the internet? (y/n): ")
+#     if (isMediator == 'y'):
+#         ip = input("Please enter the server IP you wish to connect to (leave blank for default server):")
+#         if ip == '':
+#             url = 'http://35.209.28.30:3000'
+#         else:
+#             url = 'http://' + ip + ':3000'
+#         #url = 'http://35.223.19.176:3000/'
+#         print(url)
+#         break
+#     elif (isMediator == 'n'):
+#         url = 'http://localhost:3000'
+#         break
+#     else:
+#         print("Invalid input. Please enter 'y' or 'n'.")
 
 try:
     socket.connect(url)
